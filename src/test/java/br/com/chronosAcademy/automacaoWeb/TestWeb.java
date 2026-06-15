@@ -1,34 +1,42 @@
 package br.com.chronosAcademy.automacaoWeb;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import static org.junit.Assert.*;
-
+import br.com.chronosAcademy.core.Driver;
+import br.com.chronosAcademy.pages.CursoPage;
+import br.com.chronosAcademy.pages.PrincipalPage;
 import org.junit.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.WebDriver;
+import static org.junit.Assert.*;
 
 public class TestWeb {
 
-    ChromeDriver driver;
+    Driver DriverWeb;
+    WebDriver driver;
+    PrincipalPage principalPage;
+    CursoPage cursoPage;
 
     @Before
     public void inicializarTeste(){
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        DriverWeb = new Driver("chrome");
+        driver = DriverWeb.getDriver();
         driver.get("https://www.chronosacademy.com.br");
-        //ChromeDriver driver; quer dizer que ela ta local dentro do método
-
+        principalPage = new PrincipalPage(driver);
     }
 
     @Test
     public void primerioTeste(){
-            String xpathTitulo= "//section[2]//h4";
-        WebElement txtTitulo = driver.findElement(By.xpath(xpathTitulo));
-        String titulo = txtTitulo.getText();
+        String titulo = principalPage.getTitulo();
         assertEquals("Porque Tempo É Conhecimento.",titulo);
 
+    }
+
+    @Test
+    public void segundoTeste() throws InterruptedException {
+        cursoPage = new CursoPage(driver);
+        principalPage.clickBotao();
+        Thread.sleep(1000);
+        String titulo = cursoPage.getTitulo2();
+
+        assertEquals("Conheça todos os nossos cursos.", titulo);
     }
 
     @After
